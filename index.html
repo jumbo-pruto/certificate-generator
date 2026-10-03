@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Certificate Generator</title>
+
+  <!-- Optional: an elegant script font for the name. If you are offline the
+       browser falls back to the system fonts listed in CERT_CONFIG below. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page__head">
+      <h1>Certificate Generator</h1>
+      <p class="page__sub">Type a name, hit Generate, and the finished certificate downloads.</p>
+    </header>
+
+    <p class="notice" id="notice" hidden></p>
+
+    <form class="card" id="cert-form" novalidate>
+      <div class="field">
+        <label for="name">Name on the certificate</label>
+        <input id="name" name="name" type="text" placeholder="e.g. Jane Doe"
+               autocomplete="off" autocapitalize="words" spellcheck="false" maxlength="80">
+        <p class="field__hint" id="hint">Enter a name to enable the download buttons.</p>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn btn--primary" id="btn-png" disabled>Generate certificate (PNG)</button>
+        <button type="button" class="btn btn--ghost" id="btn-pdf" disabled>Download PDF</button>
+      </div>
+
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </form>
+
+    <section class="preview">
+      <div class="preview__bar">
+        <span class="preview__label">Preview</span>
+        <span class="preview__meta" id="preview-meta"></span>
+      </div>
+      <div class="preview__stage">
+        <canvas id="certificate" aria-label="Live preview of the certificate"></canvas>
+      </div>
+    </section>
+
+    <footer class="page__foot">
+      <p>
+        Background: <strong id="bg-name">certificate-bg.png</strong> — drop a replacement in this
+        folder and reload. Name position, font and colour are set in the
+        <code>CERT_CONFIG</code> block at the bottom of <code>index.html</code>.
+      </p>
+    </footer>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       ▼▼▼  EDIT YOUR CERTIFICATE HERE  ▼▼▼
+
+       All positions and sizes are PERCENTAGES of the background image, so if
+       you swap in a differently-sized PNG the name stays in the same relative
+       spot. Only change the pixelOverrides below if you would rather work in
+       exact pixels of the current image.
+
+         xPercent            0 = far left, 50 = centred, 100 = far right
+         yPercent            0 = top,      50 = middle, 100 = bottom
+         fontSizePercent     font size as a percentage of image HEIGHT
+         maxWidthPercent     names wider than this get shrunk to fit
+         minFontSizePercent  the smallest auto-shrink is allowed to go
+         pixelOverrides      set any of these to a number to use pixels
+                             instead of percentages for that one value
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    window.CERT_CONFIG = {
+      // --- the background image, sitting next to this file ---
+      backgroundFile: 'certificate-bg.png',
+
+      // --- where the name goes ---
+      xPercent: 50,
+      yPercent: 51,
+      fontSizePercent: 7,
+      maxWidthPercent: 74,
+      minFontSizePercent: 1.5,
+
+      // --- how the name looks ---
+      color: '#1f2a44',
+      fontFamily: '"Great Vibes", "Snell Roundhand", "Brush Script MT", cursive',
+      fontWeight: 400,
+      textAlign: 'center',      // 'center' | 'left' | 'right'
+      textBaseline: 'middle',   // yPercent marks the middle of the text by default
+      letterSpacingEm: 0,       // e.g. 0.06 for spaced-out capitals
+      uppercase: false,
+
+      // --- behaviour ---
+      autoShrink: true,         // shrink long names so they always fit
+      pixelOverrides: { x: null, y: null, fontSize: null },
+      downloadPrefix: 'certificate',
+      pdfFit: 'fit',            // 'fit' (no cropping) | 'fill' (no bars) | 'stretch'
+
+      // used only when certificate-bg.png cannot be loaded
+      fallbackSize: { width: 2000, height: 1414 }
+    };
+  </script>
+  <script src="app.js" defer></script>
+</body>
+</html>
